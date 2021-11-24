@@ -14,7 +14,6 @@ import java.util.List;
  * @Author jqWang
  * Date 2021/11/24 10:24
  **/
-
 public class SeckillMapperTest {
     private SeckillMapper seckillMapper;
 
@@ -33,13 +32,16 @@ public class SeckillMapperTest {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext-dao.xml");
         SeckillMapper mapper = (SeckillMapper)context.getBean("seckillMapper");
         long seckillId = 1000;
+        System.out.println(seckillId);
         Seckill seckill = mapper.queryById(seckillId);
         System.out.println(seckill.toString());
     }
 
     @Test
     public void queryAll() throws Exception {
-        List<Seckill> seckills = seckillMapper.queryAll(0, 100);
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext-dao.xml");
+        SeckillMapper mapper = (SeckillMapper)context.getBean("seckillMapper");
+        List<Seckill> seckills = mapper.queryAll(0, 100);
         for (Seckill seckill : seckills) {
             System.out.println(seckill.toString());
         }
