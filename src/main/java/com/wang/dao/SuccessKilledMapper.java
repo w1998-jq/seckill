@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface SuccessKilledMapper {
     /**
-     * 插入一条详细的购买信息.
+     * 插入一条详细的购买信息.可过滤重复
      *
      * @param seckillId 秒杀商品的ID
      * @param userPhone 购买用户的手机号码

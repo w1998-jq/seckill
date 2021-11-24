@@ -15,14 +15,12 @@ public interface SeckillService {
      * @return 数据库中所有的秒杀记录
      */
     List<Seckill> getSeckillList();
-
     /**
      *   查询单个秒杀记录
      * @param seckillId   秒杀记录的ID
      * @return   根据ID查询出来的记录信息
      */
     Seckill getById(long seckillId);
-
     /**
      * 在秒杀开启时输出秒杀接口的地址,否则输出系统时间跟秒杀地址
      * @param seckillId  秒杀商品Id

@@ -11,13 +11,15 @@ import com.wang.exception.SeckillException;
 import com.wang.pojo.Seckill;
 import com.wang.pojo.SuccessKilled;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @ClassName SeckillServiceImpl
@@ -25,13 +27,11 @@ import java.util.logging.Logger;
  * @Author jqWang
  * Date 2021/11/24 13:40
  **/
+@Service
 public class SeckillServiceImpl implements SeckillService {
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     /* 加入一个盐值,用于混淆*/
     private final String salt = "thisIsASaltValue";
-
-    @Autowired
-    private RedisDao redisDao;
     @Autowired
     private SeckillMapper seckillMapper;
     @Autowired
@@ -73,16 +73,9 @@ public class SeckillServiceImpl implements SeckillService {
             logger.warn("查询不到这个秒杀产品的记录");
             return new Exposer(false, seckillId);
         }*/
-        Seckill seckill = redisDao.getSeckill(seckillId);
+        Seckill seckill = seckillMapper.queryById(seckillId);
         if (seckill == null) {
-            // 访问数据库读取数据
-            seckill = seckillMapper.queryById(seckillId);
-            if (seckill == null) {
-                return new Exposer(false, seckillId);
-            } else {
-                // 放入redis
-                redisDao.putSeckill(seckill);
-            }
+            return new Exposer(false, seckillId);
         }
 
         // 判断是否还没到秒杀时间或者是过了秒杀时间
@@ -90,21 +83,16 @@ public class SeckillServiceImpl implements SeckillService {
         LocalDateTime endTime = seckill.getEndTime();
         LocalDateTime nowTime = LocalDateTime.now();
         //   开始时间大于现在的时候说明没有开始秒杀活动    秒杀活动结束时间小于现在的时间说明秒杀已经结束了
-       /* if (!nowTime.isAfter(startTime)) {
+        if (!nowTime.isAfter(startTime)) {
             logger.info("现在的时间不在开始时间后面,未开启秒杀");
             return new Exposer(false, seckillId, nowTime, startTime, endTime);
         }
         if (!nowTime.isBefore(endTime)) {
             logger.info("现在的时间不在结束的时间之前,可以进行秒杀");
             return new Exposer(false, seckillId, nowTime, startTime, endTime);
-        }*/
-        if (nowTime.isAfter(startTime) && nowTime.isBefore(endTime)) {
-            //秒杀开启,返回秒杀商品的id,用给接口加密的md5
-            String md5 = getMd5(seckillId);
-            return new Exposer(true, md5, seckillId);
         }
-        return new Exposer(false, seckillId, nowTime, startTime, endTime);
-
+        String md5 = getMd5(seckillId);
+        return new Exposer(true, md5, seckillId);
 
     }
 
@@ -122,9 +110,9 @@ public class SeckillServiceImpl implements SeckillService {
      * @return 根据不同的结果返回不同的实体信息
      */
     @Override
+    @Transactional
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException {
         if (md5 == null || !md5.equals(getMd5(seckillId))) {
-
             throw new SeckillException("seckill data rewrite");
         }
         // 执行秒杀业务逻辑
