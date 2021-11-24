@@ -16,7 +16,7 @@
           AND number > 0
     </update>
 
-    <select id="queryById" resultType="com.wang.entity.Seckill">
+    <select id="queryById" resultType="com.wang.pojo.Seckill">
         SELECT
             *
         FROM seckill AS s
@@ -24,7 +24,7 @@
     </select>
 
 
-    <select id="queryAll" resultType="com.wang.entity.Seckill">
+    <select id="queryAll" resultType="com.wang.pojo.Seckill">
         SELECT
             *
         FROM seckill AS s
