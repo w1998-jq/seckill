@@ -2,7 +2,6 @@ package com.wang.service;
 
 import com.wang.dao.SeckillMapper;
 import com.wang.dao.SuccessKilledMapper;
-import com.wang.dao.cache.RedisDao;
 import com.wang.dto.Exposer;
 import com.wang.dto.SeckillExecution;
 import com.wang.exception.RepeatKillException;
@@ -11,9 +10,11 @@ import com.wang.exception.SeckillException;
 import com.wang.pojo.Seckill;
 import com.wang.pojo.SuccessKilled;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -27,6 +28,7 @@ import java.util.List;
  * @Author jqWang
  * Date 2021/11/24 13:40
  **/
+
 @Service
 public class SeckillServiceImpl implements SeckillService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,6 +47,7 @@ public class SeckillServiceImpl implements SeckillService {
      */
     @Override
     public List<Seckill> getSeckillList() {
+        System.out.println(seckillMapper);
         return seckillMapper.queryAll(0, 4);
     }
 

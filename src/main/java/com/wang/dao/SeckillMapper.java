@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface SeckillMapper {
     /**
@@ -12,7 +13,7 @@ public interface SeckillMapper {
      *
      * @param seckillId 秒杀商品ID
      * @param killTime  秒杀的精确时间
-     * @return 如果秒杀成功就返回1,否则就返回0
+     * @return 如果秒杀成功就返回1，否则就返回0
      */
     int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") LocalDateTime killTime);
 
@@ -32,4 +33,10 @@ public interface SeckillMapper {
      * @return 符合偏移量查出来的数据个数
      */
     List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     *  使用储存过程执行秒杀
+     * @param paramMap
+     */
+    void killByProcedure(Map<String,Object> paramMap);
 }
