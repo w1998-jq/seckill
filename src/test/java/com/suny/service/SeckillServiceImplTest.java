@@ -1,6 +1,7 @@
 package com.suny.service;
 
 import com.suny.pojo.Seckill;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
