@@ -1,5 +1,6 @@
 package com.suny.service;
 
+import com.suny.dao.Redis.RedisDao;
 import com.suny.dao.SeckillMapper;
 import com.suny.dao.SuccessKilledMapper;
 import com.suny.dto.Exposer;
@@ -33,6 +34,9 @@ public class SeckillServiceImpl implements SeckillService{
     private final String salt = "thisIsASaltValue";
 
     @Autowired
+    private RedisDao redisDao;
+
+    @Autowired
     private SeckillMapper seckillMapper;
 
     @Autowired
@@ -50,11 +54,22 @@ public class SeckillServiceImpl implements SeckillService{
 
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
+        Seckill seckill = redisDao.getSeckill(seckillId);
+        if(seckill == null){
+            seckill = seckillMapper.queryById(seckillId);
+            if(seckill == null){
+                return new Exposer(false,seckillId);
+            }else {
+                redisDao.putSeckill(seckill);
+            }
+        }
+        /*
         Seckill seckill = seckillMapper.queryById(seckillId);
         if(seckill == null){
             logger.warn("查询不到秒杀产品得记录");
             return new Exposer(false,seckillId);
-        }
+        }*/
+
         LocalDateTime startTime = seckill.getStartTime();
         LocalDateTime endTime = seckill.getEndTime();
         LocalDateTime nowTime = LocalDateTime.now();

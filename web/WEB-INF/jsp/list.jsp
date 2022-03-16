@@ -1,6 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" language="java" %>
 <%@include file="common/tag.jsp" %>
-<%@taglib prefix="tags" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="tags" tagdir="/web/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
